@@ -38,7 +38,7 @@ const JobDetails = () => {
             <h1 className='text-primary text-lg font-medium mb-3'>Skills</h1>
             <ul>
               {skills.map((skill) => (
-                <li className='flex items-center'>
+                <li key={skill._id} className='flex items-center'>
                   <BsArrowRightShort /> <span>{skill}</span>
                 </li>
               ))}

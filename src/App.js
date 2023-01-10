@@ -1,15 +1,27 @@
-import { Provider } from "react-redux";
+import { onAuthStateChanged } from "firebase/auth";
+import { useEffect } from "react";
+import { Provider, useDispatch } from "react-redux";
 import { RouterProvider } from "react-router-dom";
-import { store } from "./reduxToolkitAll/app/store";
+import auth from "./firebase/firebase.config";
+import { getUser, setUser, toggleLoading } from "./reduxToolkitAll/features/auth/authSilce";
 import routes from "./routes/routes";
 
 function App() {
-  console.log(process.env);
+  const dispatch = useDispatch();
+  useEffect(()=> {
+    onAuthStateChanged(auth, (user) => {
+      if(user){
+        console.log(user);
+        dispatch(getUser(user.email));
+      }
+      else{
+        dispatch(toggleLoading());
+      }
+    });
+  },[])
   return (
     <>
-     <Provider store={store}>
      <RouterProvider router={routes} />
-     </Provider>
     </>
   );
 }
