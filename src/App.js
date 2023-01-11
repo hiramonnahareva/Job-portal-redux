@@ -5,6 +5,7 @@ import { RouterProvider } from "react-router-dom";
 import auth from "./firebase/firebase.config";
 import { getUser, setUser, toggleLoading } from "./reduxToolkitAll/features/auth/authSilce";
 import routes from "./routes/routes";
+import toast, { Toaster } from 'react-hot-toast';
 
 function App() {
   const dispatch = useDispatch();
@@ -22,6 +23,7 @@ function App() {
   return (
     <>
      <RouterProvider router={routes} />
+     <Toaster/>
     </>
   );
 }

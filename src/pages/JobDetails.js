@@ -2,7 +2,19 @@ import React from "react";
 
 import meeting from "../assets/meeting.jpg";
 import { BsArrowRightShort, BsArrowReturnRight } from "react-icons/bs";
+import { useApplyMutation, useJobByIdQuery } from "../reduxToolkitAll/features/job/jobapi";
+import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { toast } from "react-hot-toast";
+import { useForm } from "react-hook-form";
+console.log('/job-details')
 const JobDetails = () => {
+  const {id} = useParams();
+  const {user} = useSelector((state) => state.auth);
+  const {register, handleSubmit, reset} = useForm();
+  const navigate = useNavigate();
+  const {data, isLoading, isError} = useJobByIdQuery(id);
+ 
   const {
     companyName,
     position,
@@ -17,10 +29,39 @@ const JobDetails = () => {
     overview,
     queries,
     _id,
-  } = {};
+  } = data?.data || {};
+
+  const [apply] = useApplyMutation();
+
+  const handleApply = () => {
+    
+    if(user.role === "employer"){
+      toast.error('You need a candidate account to apply.');
+      return;
+
+    }
+    if(user.role === ""){
+      navigate('/register');
+      return;
+    }
+    
+    const data = {
+      userId: user._id,
+      email : user.email,
+      jobId : _id,
+
+    }
+    apply(data);
+
+  }
+  const handleQuestion = (data) => {
+    console.log(data)
+    reset()
+  }
 
   return (
-    <div className='pt-14 grid grid-cols-12 gap-5'>
+   
+    <div className='pt-14 grid grid-cols-12 gap-5 px-40'>
       <div className='col-span-9 mb-10'>
         <div className='h-80 rounded-xl overflow-hidden'>
           <img className='h-full w-full object-cover' src={meeting} alt='' />
@@ -28,7 +69,7 @@ const JobDetails = () => {
         <div className='space-y-5'>
           <div className='flex justify-between items-center mt-5'>
             <h1 className='text-xl font-semibold text-primary'>{position}</h1>
-            <button className='btn'>Apply</button>
+            <button onClick={handleApply} className='btn'>Apply</button>
           </div>
           <div>
             <h1 className='text-primary text-lg font-medium mb-3'>Overview</h1>
@@ -37,7 +78,7 @@ const JobDetails = () => {
           <div>
             <h1 className='text-primary text-lg font-medium mb-3'>Skills</h1>
             <ul>
-              {skills.map((skill) => (
+              {skills && skills.map((skill) => (
                 <li key={skill._id} className='flex items-center'>
                   <BsArrowRightShort /> <span>{skill}</span>
                 </li>
@@ -49,7 +90,7 @@ const JobDetails = () => {
               Requirements
             </h1>
             <ul>
-              {requirements.map((skill) => (
+              {requirements && requirements.map((skill) => (
                 <li className='flex items-center'>
                   <BsArrowRightShort /> <span>{skill}</span>
                 </li>
@@ -61,7 +102,7 @@ const JobDetails = () => {
               Responsibilities
             </h1>
             <ul>
-              {responsibilities.map((skill) => (
+              { responsibilities && responsibilities.map((skill) => (
                 <li className='flex items-center'>
                   <BsArrowRightShort /> <span>{skill}</span>
                 </li>
@@ -71,12 +112,13 @@ const JobDetails = () => {
         </div>
         <hr className='my-5' />
         <div>
+          
           <div>
             <h1 className='text-xl font-semibold text-primary mb-5'>
               General Q&A
             </h1>
             <div className='text-primary my-2'>
-              {queries.map(({ question, email, reply, id }) => (
+              {queries && queries.map(({ question, email, reply, id }) => (
                 <div>
                   <small>{email}</small>
                   <p className='text-lg font-medium'>{question}</p>
@@ -99,19 +141,24 @@ const JobDetails = () => {
               ))}
             </div>
 
+           {/* { role: 'candidate' && */}
+            <form onSubmit={handleSubmit(handleQuestion)}>
             <div className='flex gap-3 my-5'>
               <input
                 placeholder='Ask a question...'
                 type='text'
                 className='w-full'
+                {...register("question")}
               />
               <button
                 className='shrink-0 h-14 w-14 bg-primary/10 border border-primary hover:bg-primary rounded-full transition-all  grid place-items-center text-primary hover:text-white'
-                type='button'
+                type='submit'
               >
                 <BsArrowRightShort size={30} />
               </button>
             </div>
+          </form>
+          {/* } */}
           </div>
         </div>
       </div>
@@ -167,6 +214,7 @@ const JobDetails = () => {
         </div>
       </div>
     </div>
+   
   );
 };
 

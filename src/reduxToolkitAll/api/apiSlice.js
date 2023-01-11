@@ -6,6 +6,8 @@ import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
     baseQuery: fetchBaseQuery({
         baseUrl: "http://localhost:5000",
     }),
+    tagTypes: ["jobs"],
+
     endpoints: (builder) => ({}),
 });
 
