@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 
 import meeting from "../assets/meeting.jpg";
 import { BsArrowRightShort, BsArrowReturnRight } from "react-icons/bs";
-import { useApplyMutation, useJobByIdQuery } from "../reduxToolkitAll/features/job/jobapi";
+import { useApplyMutation, useJobByIdQuery, useQuestionMutation, useReplyMutation } from "../reduxToolkitAll/features/job/jobapi";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
@@ -10,10 +10,11 @@ import { useForm } from "react-hook-form";
 console.log('/job-details')
 const JobDetails = () => {
   const {id} = useParams();
+  const [reply, setReply] = useState("")
   const {user} = useSelector((state) => state.auth);
   const {register, handleSubmit, reset} = useForm();
   const navigate = useNavigate();
-  const {data, isLoading, isError} = useJobByIdQuery(id);
+  const {data, isLoading, isError} = useJobByIdQuery(id, {pollingInterval: 1000});
  
   const {
     companyName,
@@ -32,6 +33,8 @@ const JobDetails = () => {
   } = data?.data || {};
 
   const [apply] = useApplyMutation();
+  const [sendQuestion] = useQuestionMutation();
+  const [sendReply] = useReplyMutation( )
 
   const handleApply = () => {
     
@@ -52,10 +55,25 @@ const JobDetails = () => {
 
     }
     apply(data);
-
   }
   const handleQuestion = (data) => {
-    console.log(data)
+    const queData = {
+      ...data,
+      userID: user._id,
+      email: user.email,
+      jobId: _id,
+    }
+    sendQuestion(queData);
+    toast.success('Successfully added data');
+    reset()
+  }
+  const handleReply = (id) => {
+    const data = {
+      reply,
+      userId: id,
+    }
+    sendReply(data);
+    toast.success('Successfully added data');
     reset()
   }
 
@@ -127,21 +145,26 @@ const JobDetails = () => {
                       <BsArrowReturnRight /> {item}
                     </p>
                   ))}
+                  
+                   { user.role === "employer" &&
 
                   <div className='flex gap-3 my-5'>
-                    <input placeholder='Reply' type='text' className='w-full' />
+                    <input  onBlur={(e) => setReply(e.target.value)} placeholder='Reply' type='text' className='w-full' />
+                   
                     <button
                       className='shrink-0 h-14 w-14 bg-primary/10 border border-primary hover:bg-primary rounded-full transition-all  grid place-items-center text-primary hover:text-white'
                       type='button'
+                      onClick={() => handleReply(id)}
                     >
                       <BsArrowRightShort size={30} />
                     </button>
                   </div>
+}
                 </div>
               ))}
             </div>
 
-           {/* { role: 'candidate' && */}
+           { user.role === "candidate" &&
             <form onSubmit={handleSubmit(handleQuestion)}>
             <div className='flex gap-3 my-5'>
               <input
@@ -158,7 +181,7 @@ const JobDetails = () => {
               </button>
             </div>
           </form>
-          {/* } */}
+           } 
           </div>
         </div>
       </div>

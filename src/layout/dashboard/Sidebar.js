@@ -31,9 +31,9 @@ const Sidebar = () => {
           <li>
           <Link
             className='hover:bg-primary hover:text-white bg-primary/10 transition-all w-full block py-2 px-3 rounded-full'
-            to='add-job'
+            to={path}
           >
-            Add Job
+            {name}
           </Link>
         </li>
         )
@@ -43,9 +43,9 @@ const Sidebar = () => {
           <li>
           <Link
             className='hover:bg-primary hover:text-white bg-primary/10 transition-all w-full block py-2 px-3 rounded-full'
-            to='applied-jobs'
+            to={path}
           >
-           Applied Jobs
+           {name}
           </Link>
         </li>
         )
