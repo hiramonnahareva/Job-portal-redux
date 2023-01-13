@@ -58,7 +58,7 @@ const Platform = () => {
             <div className='grid grid-cols-4 gap-6 mx-20'>
                     {
                         data.map(data => 
-                            <div className='flex gap-4 p-10 bg-white hover:bg-primary hover:text-white rounded-lg transition-all'>
+                            <div key={data._id} className='flex gap-4 p-10 bg-white hover:bg-primary hover:text-white rounded-lg transition-all'>
                             <div className='text-3xl text-pink-400 '>
                                 {data.icon} 
 

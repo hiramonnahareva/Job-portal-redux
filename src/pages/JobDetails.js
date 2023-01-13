@@ -7,7 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
-console.log('/job-details')
+
 const JobDetails = () => {
   const {id} = useParams();
   const [reply, setReply] = useState("")
@@ -55,6 +55,7 @@ const JobDetails = () => {
 
     }
     apply(data);
+    toast.success('candidate apply successfully.');
   }
   const handleQuestion = (data) => {
     const queData = {
@@ -64,7 +65,7 @@ const JobDetails = () => {
       jobId: _id,
     }
     sendQuestion(queData);
-    toast.success('Successfully added data');
+    toast.success('added your qusetion');
     reset()
   }
   const handleReply = (id) => {
@@ -73,7 +74,7 @@ const JobDetails = () => {
       userId: id,
     }
     sendReply(data);
-    toast.success('Successfully added data');
+    toast.success('Successfully replied');
     reset()
   }
 

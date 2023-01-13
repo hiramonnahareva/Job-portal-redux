@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { FaChevronLeft } from "react-icons/fa";
 import { useRegisterMutation } from "../../reduxToolkitAll/features/auth/authApi";
 import { useSelector } from "react-redux";
+import { toast } from "react-hot-toast";
 
 const EmployerRegistration = () => {
   const [countries, setCountries] = useState([]);
@@ -43,14 +44,14 @@ const EmployerRegistration = () => {
   const employeeRange = ["1 - 10", "11 - 50", "51 - 100", "Above 100"];
 
   useEffect(() => {
-    fetch("http://localhost:5000/all")
+    fetch("https://job-protal-website-server.vercel.app/all")
       .then((res) => res.json())
       .then((data) => setCountries(data));
   }, []);
 
   const onSubmit = (data) => {
-    console.log(data);
     postUser({...data, role: "employer"})
+    toast.success('Register successfully');
   };
 
   return (
