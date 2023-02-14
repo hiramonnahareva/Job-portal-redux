@@ -1,5 +1,6 @@
 import React from "react";
 import { Outlet, useLocation } from "react-router-dom";
+import Footer from "../../components/reusable/Footer";
 import Navbar from "./Navbar";
 
 const Main = () => {
@@ -7,13 +8,14 @@ const Main = () => {
 
   return (
     <div>
-      <Navbar />
+      <Navbar /> 
       <div
         className={` ${
           pathname === "/" ? "max-w-[1600px] px-5" : "max-w-7xl"
         } max-w-[1600px] mx-auto`}
       >
         <Outlet />
+        <Footer/>
       </div>
     </div>
   );
